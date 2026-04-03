@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ModAI — Planejamento Técnico Completo (9 Blocos)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #0036FF;
+  --blue-dark: #001A80;
+  --blue-light: #E8EDFF;
+  --orange: #F97316;
+  --orange-light: #FFF7ED;
+  --green: #10B981;
+  --green-light: #ECFDF5;
+  --red: #EF4444;
+  --red-light: #FEF2F2;
+  --purple: #8B5CF6;
+  --purple-light: #F3F0FF;
+  --g50: #F8FAFC; --g100: #F1F5F9; --g200: #E2E8F0; --g300: #CBD5E1;
+  --g400: #94A3B8; --g500: #64748B; --g600: #475569; --g700: #334155;
+  --g800: #1E293B; --g900: #0F172A;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:var(--g50); color:var(--g800); line-height:1.6; }
+a { color:var(--blue); text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+/* ── Nav ── */
+.topnav {
+  position:sticky; top:0; z-index:100;
+  background:linear-gradient(135deg,var(--blue-dark),var(--blue));
+  padding:0.8rem 1.5rem;
+  display:flex; align-items:center; gap:1rem;
+  box-shadow:0 2px 12px rgba(0,0,0,0.15);
+  overflow-x:auto;
+}
+.topnav .logo { color:white; font-weight:800; font-size:1.1rem; white-space:nowrap; }
+.topnav .logo span { color:var(--orange); }
+.topnav a {
+  color:rgba(255,255,255,0.75); font-size:0.75rem; font-weight:600;
+  white-space:nowrap; padding:0.3rem 0.6rem; border-radius:6px;
+  transition:all 0.2s;
+}
+.topnav a:hover { color:white; background:rgba(255,255,255,0.1); text-decoration:none; }
+
+/* ── Header ── */
+.hero {
+  background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 100%);
+  color:white; padding:3rem 1.5rem 2.5rem; text-align:center;
+}
+.hero h1 { font-size:2.2rem; font-weight:900; letter-spacing:-0.03em; }
+.hero h1 span { color:var(--orange); }
+.hero p { margin-top:0.5rem; opacity:0.85; font-size:1.05rem; max-width:700px; margin-inline:auto; }
+.hero-tags { display:flex; gap:0.8rem; justify-content:center; margin-top:1.2rem; flex-wrap:wrap; }
+.hero-tags .t {
+  background:rgba(255,255,255,0.12); padding:0.3rem 0.8rem;
+  border-radius:6px; font-size:0.8rem; font-weight:600;
+}
+
+/* ── Content ── */
+.container { max-width:1100px; margin:0 auto; padding:2rem 1rem; }
+
+/* ── Block ── */
+.block {
+  background:white; border-radius:16px; padding:2rem;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom:2rem; border:1px solid var(--g100);
+  scroll-margin-top:60px;
+}
+.block-num {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:36px; height:36px; border-radius:10px;
+  font-size:0.9rem; font-weight:800; color:white; flex-shrink:0;
+}
+.bn-blue { background:var(--blue); }
+.bn-green { background:var(--green); }
+.bn-orange { background:var(--orange); }
+.bn-red { background:var(--red); }
+.bn-purple { background:var(--purple); }
+.block-header { display:flex; align-items:center; gap:0.8rem; margin-bottom:1.5rem; }
+.block-header h2 { font-size:1.3rem; font-weight:800; color:var(--g900); }
+.block-header .sub { font-size:0.85rem; color:var(--g500); margin-top:0.1rem; }
+
+/* ── Tables ── */
+table { width:100%; border-collapse:collapse; font-size:0.88rem; margin-top:0.8rem; }
+th {
+  text-align:left; padding:0.6rem 0.8rem; font-size:0.72rem;
+  text-transform:uppercase; letter-spacing:0.05em; color:var(--g500);
+  border-bottom:2px solid var(--g100); background:var(--g50);
+}
+td { padding:0.6rem 0.8rem; border-bottom:1px solid var(--g50); vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+.highlight-row { background:var(--blue-light); font-weight:600; }
+.warn-row { background:var(--orange-light); }
+.danger-row { background:var(--red-light); }
+
+/* ── Badges ── */
+.b { font-size:0.68rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:4px; white-space:nowrap; }
+.b-blue { background:var(--blue-light); color:var(--blue); }
+.b-green { background:var(--green-light); color:var(--green); }
+.b-orange { background:var(--orange-light); color:var(--orange); }
+.b-red { background:var(--red-light); color:var(--red); }
+.b-purple { background:var(--purple-light); color:var(--purple); }
+.b-gray { background:var(--g100); color:var(--g600); }
+
+/* ── Sub-sections ── */
+.sub-block {
+  margin-top:1.5rem; padding:1.2rem;
+  background:var(--g50); border-radius:12px;
+  border:1px solid var(--g100);
+}
+.sub-block h3 {
+  font-size:0.85rem; font-weight:700; color:var(--g700);
+  text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.8rem;
+}
+.sub-block p { font-size:0.85rem; color:var(--g600); margin-bottom:0.4rem; }
+
+/* ── Flow diagrams ── */
+.flow {
+  display:flex; align-items:center; gap:0; overflow-x:auto;
+  padding:1rem 0; margin-top:0.5rem;
+}
+.flow-step {
+  display:flex; flex-direction:column; align-items:center;
+  min-width:100px; text-align:center;
+}
+.flow-step .dot {
+  width:48px; height:48px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; color:white; font-weight:700;
+  position:relative; z-index:1;
+}
+.flow-step .lbl { font-size:0.72rem; font-weight:600; color:var(--g600); margin-top:0.4rem; max-width:90px; }
+.flow-arrow {
+  width:40px; height:2px; background:var(--g300); flex-shrink:0;
+  position:relative; top:-12px;
+}
+
+/* ── Screen cards ── */
+.screens { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-top:1rem; }
+.screen-card {
+  background:var(--g50); border:1px solid var(--g200);
+  border-radius:12px; padding:1rem; text-align:center;
+  transition:all 0.2s;
+}
+.screen-card:hover { border-color:var(--blue); box-shadow:0 2px 12px rgba(0,54,255,0.1); }
+.screen-card .icon { font-size:1.8rem; margin-bottom:0.5rem; }
+.screen-card .name { font-size:0.85rem; font-weight:700; color:var(--g800); }
+.screen-card .route { font-size:0.72rem; color:var(--g400); font-family:monospace; margin-top:0.2rem; }
+.screen-card .desc { font-size:0.78rem; color:var(--g500); margin-top:0.4rem; }
+
+/* ── Decision box ── */
+.decision {
+  margin-top:1.5rem; padding:1.2rem;
+  background:var(--orange-light); border-radius:12px;
+  border:2px solid rgba(249,115,22,0.2);
+}
+.decision h4 { color:var(--orange); font-size:0.9rem; font-weight:700; margin-bottom:0.5rem; }
+
+/* ── Delivery blocks ── */
+.deliveries { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem; margin-top:1rem; }
+.delivery {
+  background:white; border:2px solid var(--g200);
+  border-radius:12px; padding:1.2rem; position:relative;
+}
+.delivery.d1 { border-color:var(--blue); }
+.delivery.d2 { border-color:var(--green); }
+.delivery.d3 { border-color:var(--orange); }
+.delivery h4 { font-size:0.9rem; font-weight:700; margin-bottom:0.6rem; }
+.delivery ul { list-style:none; font-size:0.85rem; }
+.delivery li { padding:0.3rem 0; display:flex; align-items:flex-start; gap:0.4rem; }
+.delivery li::before { content:"→"; color:var(--g400); flex-shrink:0; }
+
+/* ── API table ── */
+.method { font-family:monospace; font-size:0.75rem; font-weight:700; padding:0.15rem 0.4rem; border-radius:4px; }
+.m-get { background:#DBEAFE; color:#1D4ED8; }
+.m-post { background:#D1FAE5; color:#065F46; }
+.m-put { background:#FEF3C7; color:#92400E; }
+.m-del { background:#FEE2E2; color:#991B1B; }
+
+/* ── Responsive ── */
+@media (max-width:768px) {
+  .hero h1 { font-size:1.5rem; }
+  .block { padding:1.2rem; }
+  .screens { grid-template-columns:repeat(2,1fr); }
+  .deliveries { grid-template-columns:1fr; }
+}
+
+/* ── Print ── */
+@media print {
+  .topnav { display:none; }
+  .block { break-inside:avoid; box-shadow:none; border:1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav class="topnav">
+  <div class="logo">Mod<span>AI</span></div>
+  <a href="#b1">1. O que faz</a>
+  <a href="#b2">2. Permissões</a>
+  <a href="#b3">3. Dados</a>
+  <a href="#b4">4. Páginas</a>
+  <a href="#b5">5. Visual</a>
+  <a href="#b6">6. Segurança</a>
+  <a href="#b7">7. Pagamentos</a>
+  <a href="#b8">8. Riscos</a>
+  <a href="#b9">9. Checklist</a>
+  <a href="#api">API</a>
+  <a href="#build">Build</a>
+  <a href="#budget">Orçamento</a>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <h1>Mod<span>AI</span> — Planejamento Técnico</h1>
+  <p>9 blocos da fábrica + arquitetura + API + sequência de build</p>
+  <div class="hero-tags">
+    <span class="t">Etapa 2 — Construir</span>
+    <span class="t">Score: 26/30</span>
+    <span class="t">R$5.000 budget</span>
+    <span class="t">Hugo + Vitor + Claude</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 1 — O QUE FAZ                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b1">
+  <div class="block-header">
+    <div class="block-num bn-blue">1</div>
+    <div>
+      <h2>O que faz</h2>
+      <div class="sub">Funcionalidades organizadas por aba do app</div>
+    </div>
+  </div>
+
+  <div class="sub-block">
+    <h3>Frase nuclear</h3>
+    <p style="font-size:1.1rem;font-weight:700;color:var(--blue)">"Promoção + cupom + cashback empilhados. Só no seu estilo. Só quando está barato de verdade. Você nunca mais paga preço cheio."</p>
+  </div>
+
+  <table>
+    <thead><tr><th>Aba</th><th>Feature</th><th>Plano mínimo</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr class="highlight-row"><td colspan="4"><strong>📱 Onboarding (1x na vida)</strong></td></tr>
+      <tr><td></td><td>Cadastro (email + Google)</td><td><span class="b b-green">FREE</span></td><td>NextAuth v5</td></tr>
+      <tr><td></td><td>Swipe de estilos (20-30 fotos)</td><td><span class="b b-green">FREE</span></td><td>Tinder-style, gera perfil</td></tr>
+      <tr><td></td><td>Seleção de lojas preferidas</td><td><span class="b b-green">FREE</span></td><td>Renner, Zara, Shein, etc.</td></tr>
+      <tr><td></td><td>Slider de orçamento</td><td><span class="b b-green">FREE</span></td><td>Faixa de preço preferida</td></tr>
+      <tr><td></td><td>Resultado "Seu estilo é..."</td><td><span class="b b-green">FREE</span></td><td>Tela de resultado + tags</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>🎁 Aba "Pra Você" (feed diário)</strong></td></tr>
+      <tr><td></td><td>Peças recomendadas por estilo</td><td><span class="b b-green">FREE</span> (5/dia)</td><td>Cards com foto, preço, loja</td></tr>
+      <tr><td></td><td>Looks completos montados</td><td><span class="b b-blue">BÁSICO</span> (5/sem)</td><td>Camiseta + calça + tênis + preço total</td></tr>
+      <tr><td></td><td>Trending agora</td><td><span class="b b-green">FREE</span></td><td>Peças em alta</td></tr>
+      <tr><td></td><td>Sugestão do dia (clima)</td><td><span class="b b-purple">PREMIUM</span></td><td>Previsão do tempo + estilo</td></tr>
+      <tr><td></td><td>Botão "Ver na loja" (afiliado)</td><td><span class="b b-green">FREE</span></td><td>Link com tracking</td></tr>
+      <tr><td></td><td>Like/Dislike (refina algoritmo)</td><td><span class="b b-green">FREE</span></td><td>Feedback contínuo</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>🔥 Aba "Promoções" (pilar de conversão)</strong></td></tr>
+      <tr><td></td><td>Flash Sales (timer)</td><td><span class="b b-blue">BÁSICO</span> (1h delay)</td><td>Contagem regressiva ativa</td></tr>
+      <tr><td></td><td>Maiores descontos (% off)</td><td><span class="b b-green">FREE</span> (24h atraso)</td><td>Filtrado por estilo</td></tr>
+      <tr><td></td><td>Cupons ativos (copiar código)</td><td><span class="b b-blue">BÁSICO</span></td><td>Free vê que existe, não vê código</td></tr>
+      <tr><td></td><td>Menor preço (90 dias)</td><td><span class="b b-blue">BÁSICO</span> (30d)</td><td>Prova desconto real</td></tr>
+      <tr><td></td><td>Stack de desconto</td><td><span class="b b-blue">BÁSICO</span></td><td>Promoção + cupom empilhados</td></tr>
+      <tr><td></td><td>Alertas de queda de preço</td><td><span class="b b-blue">BÁSICO</span> (3)</td><td>Push quando preço cai</td></tr>
+      <tr><td></td><td>Histórico de preço</td><td><span class="b b-blue">BÁSICO</span> (30d)</td><td>Gráfico de preço ao longo do tempo</td></tr>
+      <tr><td></td><td>Contador de economia</td><td><span class="b b-green">FREE</span> (total)</td><td>"Você já economizou R$847"</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>🪄 Aba "Experimenta AI" (try-on)</strong></td></tr>
+      <tr><td></td><td>Upload de foto pessoal</td><td><span class="b b-green">FREE</span></td><td>1 foto salva</td></tr>
+      <tr><td></td><td>Provar peça individual</td><td><span class="b b-green">FREE</span> (1/mês)</td><td>FASHN.ai API</td></tr>
+      <tr><td></td><td>Provar look completo</td><td><span class="b b-blue">BÁSICO</span></td><td>5/mês</td></tr>
+      <tr><td></td><td>Explorar estilo ("como fico de streetwear?")</td><td><span class="b b-purple">PREMIUM</span></td><td>Transformação completa</td></tr>
+      <tr><td></td><td>Antes/depois + compartilhar</td><td><span class="b b-green">FREE</span></td><td>Stories, WhatsApp (viral)</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>💾 Aba "Salvos"</strong></td></tr>
+      <tr><td></td><td>Wishlist compartilhável</td><td><span class="b b-green">FREE</span></td><td>Link público para namorado/mãe</td></tr>
+      <tr><td></td><td>Alertas de preço ativos</td><td><span class="b b-blue">BÁSICO</span></td><td>Notifica quando cai</td></tr>
+      <tr><td></td><td>Looks salvos</td><td><span class="b b-green">FREE</span></td><td></td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>👤 Aba "Perfil"</strong></td></tr>
+      <tr><td></td><td>Meu estilo (replay swipe)</td><td><span class="b b-green">FREE</span></td><td>Refinar a qualquer hora</td></tr>
+      <tr><td></td><td>Tamanhos por loja</td><td><span class="b b-green">FREE</span></td><td>M na Renner, G na Zara</td></tr>
+      <tr><td></td><td>Ocasiões favoritas</td><td><span class="b b-green">FREE</span></td><td>Encontro, trabalho, casual</td></tr>
+      <tr><td></td><td>Orçamento</td><td><span class="b b-green">FREE</span></td><td>Editar slider</td></tr>
+      <tr><td></td><td>Plano/assinatura</td><td><span class="b b-green">FREE</span></td><td>Ver/mudar plano</td></tr>
+      <tr><td></td><td>Economia acumulada</td><td><span class="b b-green">FREE</span> (total)</td><td>Detalhes no Básico+</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 2 — QUEM PODE O QUE                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b2">
+  <div class="block-header">
+    <div class="block-num bn-blue">2</div>
+    <div>
+      <h2>Quem pode o que</h2>
+      <div class="sub">Permissões e feature gating por plano</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Feature</th><th>Grátis</th><th>Básico R$9,90</th><th>Premium R$19,90</th></tr></thead>
+    <tbody>
+      <tr><td>Feed de recomendações</td><td>5 peças/dia</td><td>Ilimitado</td><td>Ilimitado</td></tr>
+      <tr><td>Promoções</td><td><strong>24h de atraso</strong></td><td>Tempo real</td><td>Tempo real</td></tr>
+      <tr><td>Cupons</td><td>Vê que existe, <strong>não vê código</strong></td><td>Todos os códigos</td><td>Todos + exclusivos ModAI</td></tr>
+      <tr><td>Stack de desconto</td><td>Não</td><td>Sim</td><td>Sim</td></tr>
+      <tr><td>Flash sale alerts</td><td>Não</td><td>Push com 1h delay</td><td><strong>Push instantâneo</strong></td></tr>
+      <tr><td>Histórico de preço</td><td>Não</td><td>30 dias</td><td>90 dias</td></tr>
+      <tr><td>Alertas de queda</td><td>Não</td><td>3 alertas</td><td>Ilimitado</td></tr>
+      <tr><td>Contador economia</td><td>Só total</td><td>Completo</td><td>Completo</td></tr>
+      <tr><td>Looks completos</td><td>Não</td><td>5/semana</td><td>Ilimitado</td></tr>
+      <tr><td>Try-on</td><td>1/mês</td><td>5/mês</td><td><strong>Ilimitado</strong></td></tr>
+      <tr><td>Look por ocasião</td><td>Não</td><td>Não</td><td>Sim</td></tr>
+      <tr><td>Orçamento do look</td><td>Não</td><td>Não</td><td>Sim</td></tr>
+      <tr><td>Comparador de preço</td><td>Não</td><td>Sim</td><td>Sim</td></tr>
+      <tr><td>Wishlist compartilhável</td><td>Sim</td><td>Sim</td><td>Sim</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub-block">
+    <h3>Lógica do gating (frustração calculada)</h3>
+    <p><strong>Promoções com 24h atraso:</strong> Free vê a promoção que JÁ PERDEU → "se eu tivesse pago, teria pego"</p>
+    <p><strong>Cupom sem código:</strong> Free vê que tem cupom de 15% off mas não consegue copiar → "o desconto tá aqui na minha frente"</p>
+    <p><strong>Try-on limitado:</strong> Free faz 1/mês, fica viciado → quer mais</p>
+    <p><strong>Resultado:</strong> Conversão free → pago por frustração + FOMO, não por feature list.</p>
+  </div>
+
+  <table>
+    <thead><tr><th>Papel</th><th>O que pode</th></tr></thead>
+    <tbody>
+      <tr><td><span class="b b-green">Visitante</span></td><td>Ver landing page, criar conta</td></tr>
+      <tr><td><span class="b b-blue">Usuário Free</span></td><td>Onboarding, feed limitado, 1 try-on/mês, wishlist</td></tr>
+      <tr><td><span class="b b-blue">Básico</span></td><td>Tudo do free + promoções real-time, cupons, 5 try-ons</td></tr>
+      <tr><td><span class="b b-purple">Premium</span></td><td>Tudo ilimitado + exclusivos + ocasiões + orçamento</td></tr>
+      <tr><td><span class="b b-red">Admin</span></td><td>Gerenciar produtos, cupons, ver métricas, curadoria</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 3 — OS DADOS                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b3">
+  <div class="block-header">
+    <div class="block-num bn-green">3</div>
+    <div>
+      <h2>Os dados</h2>
+      <div class="sub">Tabelas do banco + decisão de fonte de dados</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Tabela</th><th>Colunas principais</th><th>Para que serve</th></tr></thead>
+    <tbody>
+      <tr><td><strong>users</strong></td><td>id, email, name, plan, onboardingCompleted, trialEndsAt</td><td>Contas + plano ativo</td></tr>
+      <tr><td><strong>accounts</strong></td><td>userId, provider, providerAccountId, tokens</td><td>Google OAuth (NextAuth)</td></tr>
+      <tr><td><strong>sessions</strong></td><td>sessionToken, userId, expires</td><td>Sessões ativas</td></tr>
+      <tr><td><strong>style_profiles</strong></td><td>userId, tags[], preferredStores[], budgetMin/Max, occasions[], sizes{}</td><td>Perfil de estilo do usuário</td></tr>
+      <tr><td><strong>swipes</strong></td><td>userId, imageUrl, liked, tags[]</td><td>Histórico de swipes (treinar algoritmo)</td></tr>
+      <tr><td><strong>products</strong></td><td>name, store, imageUrl, originalPrice, currentPrice, discountPercent, affiliateUrl, couponCode, isFlashSale, lowestPrice90d, tags[]</td><td>Catálogo de produtos das lojas</td></tr>
+      <tr><td><strong>saved_items</strong></td><td>userId, productId, priceAlertEnabled, targetPrice</td><td>Wishlist + alertas de preço</td></tr>
+      <tr><td><strong>try_on_history</strong></td><td>userId, productId, userImageUrl, resultImageUrl, type</td><td>Histórico de try-ons (controle de uso)</td></tr>
+      <tr><td><strong>subscriptions</strong></td><td>userId, asaasSubscriptionId, plan, status, currentPeriodEnd</td><td>Assinaturas ativas</td></tr>
+      <tr><td><strong>affiliate_clicks</strong></td><td>userId, productId, store, clickedAt</td><td>Tracking de cliques (receita afiliados)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="decision">
+    <h4>⚠️ DECISÃO PENDENTE — Fonte de dados dos produtos</h4>
+    <p style="font-size:0.85rem;color:var(--g700);margin-bottom:0.8rem">De onde vêm os produtos, preços e promoções que aparecem no app? Esta decisão impacta custo, complexidade e velocidade.</p>
+    <table>
+      <thead><tr><th>Opção</th><th>Como funciona</th><th>Prós</th><th>Contras</th><th>Custo</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>A — APIs de Afiliados</strong></td>
+          <td>Lomadee, Awin, Amazon, Shopee, Shein APIs</td>
+          <td>Legal, link comissão embutido, dados estruturados</td>
+          <td>Nem toda loja tem, catálogo limitado</td>
+          <td><span class="b b-green">R$0</span></td>
+        </tr>
+        <tr>
+          <td><strong>B — Web Scraping</strong></td>
+          <td>Crawlers nos sites das lojas</td>
+          <td>Dados completos, tempo real</td>
+          <td>Zona cinza legal, lojas bloqueiam, manutenção pesada</td>
+          <td>R$100-500/mês</td>
+        </tr>
+        <tr>
+          <td><strong>C — Curadoria Manual</strong></td>
+          <td>Equipe seleciona melhores ofertas/dia</td>
+          <td>Rápido, controle total, zero complexidade</td>
+          <td>Não escala, precisa de tempo humano</td>
+          <td><span class="b b-orange">Tempo</span></td>
+        </tr>
+        <tr class="warn-row">
+          <td><strong>D — Híbrido (Recomendado)</strong></td>
+          <td>APIs afiliados + curadoria manual pra completar</td>
+          <td>Melhor de tudo, lança rápido, escala gradual</td>
+          <td>Manual no início</td>
+          <td><span class="b b-green">R$0</span> + tempo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-block">
+    <h3>Fonte de imagens para swipe (onboarding)</h3>
+    <p><strong>Opção 1:</strong> Banco curado de 100-200 fotos de looks categorizados por tags (casual, streetwear, minimalista, elegante, esportivo, vintage).</p>
+    <p><strong>Opção 2:</strong> Usar imagens dos próprios produtos das lojas afiliadas.</p>
+    <p><strong>Recomendação:</strong> Opção 1 pro onboarding (fotos bonitas e diversas). Opção 2 pro feed diário (produtos reais com preço).</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 4 — AS PÁGINAS                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b4">
+  <div class="block-header">
+    <div class="block-num bn-blue">4</div>
+    <div>
+      <h2>As páginas</h2>
+      <div class="sub">Todas as telas do app + navegação</div>
+    </div>
+  </div>
+
+  <div class="sub-block">
+    <h3>Fluxo do usuário</h3>
+    <div class="flow">
+      <div class="flow-step"><div class="dot" style="background:var(--g400)">🌐</div><div class="lbl">Landing page</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step"><div class="dot" style="background:var(--blue)">📝</div><div class="lbl">Cadastro / Login</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step"><div class="dot" style="background:var(--blue)">👆</div><div class="lbl">Swipe Estilos</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step"><div class="dot" style="background:var(--blue)">🏪</div><div class="lbl">Escolhe Lojas</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step"><div class="dot" style="background:var(--blue)">💰</div><div class="lbl">Define Budget</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step"><div class="dot" style="background:var(--green)">✨</div><div class="lbl">Seu Estilo é...</div></div>
+      <div class="flow-arrow"></div>
+      <div class="flow-step"><div class="dot" style="background:var(--blue-dark)">🎁</div><div class="lbl">Feed Pra Você</div></div>
+    </div>
+  </div>
+
+  <div class="screens">
+    <div class="screen-card">
+      <div class="icon">🌐</div>
+      <div class="name">Landing Page</div>
+      <div class="route">/</div>
+      <div class="desc">Hero + como funciona + value stack + CTA "7 dias grátis"</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">📝</div>
+      <div class="name">Login</div>
+      <div class="route">/login</div>
+      <div class="desc">Email + senha ou Google. Link pra cadastro.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">✍️</div>
+      <div class="name">Cadastro</div>
+      <div class="route">/register</div>
+      <div class="desc">Nome, email, senha. Botão Google.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">👆</div>
+      <div class="name">Swipe</div>
+      <div class="route">/onboarding</div>
+      <div class="desc">20-30 cards de looks. Swipe tipo Tinder.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">🏪</div>
+      <div class="name">Escolher Lojas</div>
+      <div class="route">/onboarding/stores</div>
+      <div class="desc">Grid de logos. Toggle on/off.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">💰</div>
+      <div class="name">Orçamento</div>
+      <div class="route">/onboarding/budget</div>
+      <div class="desc">Slider de faixa de preço.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">✨</div>
+      <div class="name">Resultado</div>
+      <div class="route">/onboarding/result</div>
+      <div class="desc">"Seu estilo é Casual Moderno" + tags.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">🎁</div>
+      <div class="name">Feed Pra Você</div>
+      <div class="route">/app/feed</div>
+      <div class="desc">Cards com foto, preço, loja. Scroll infinito.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">🔥</div>
+      <div class="name">Promoções</div>
+      <div class="route">/app/promos</div>
+      <div class="desc">Flash, cupons, stack, alertas. Timer ativo.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">🪄</div>
+      <div class="name">Experimenta AI</div>
+      <div class="route">/app/tryon</div>
+      <div class="desc">Upload foto → escolhe peça → resultado.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">💾</div>
+      <div class="name">Salvos</div>
+      <div class="route">/app/saved</div>
+      <div class="desc">Wishlist, alertas ativos, looks salvos.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">👤</div>
+      <div class="name">Perfil</div>
+      <div class="route">/app/profile</div>
+      <div class="desc">Estilo, tamanhos, plano, economia.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">💳</div>
+      <div class="name">Planos</div>
+      <div class="route">/app/plans</div>
+      <div class="desc">Grátis vs Básico vs Premium. Checkout.</div>
+    </div>
+    <div class="screen-card">
+      <div class="icon">📊</div>
+      <div class="name">Admin</div>
+      <div class="route">/admin</div>
+      <div class="desc">Produtos, cupons, métricas. Só Hugo.</div>
+    </div>
+  </div>
+
+  <div class="sub-block">
+    <h3>Navegação principal (bottom tabs — mobile-first)</h3>
+    <table>
+      <thead><tr><th>Posição</th><th>Aba</th><th>Ícone</th><th>Rota</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Pra Você</td><td>🎁 Sparkles</td><td>/app/feed</td></tr>
+        <tr><td>2</td><td>Promoções</td><td>🔥 Flame</td><td>/app/promos</td></tr>
+        <tr><td>3</td><td>Experimenta</td><td>🪄 Wand</td><td>/app/tryon</td></tr>
+        <tr><td>4</td><td>Salvos</td><td>💾 Heart</td><td>/app/saved</td></tr>
+        <tr><td>5</td><td>Perfil</td><td>👤 User</td><td>/app/profile</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 5 — O VISUAL                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b5">
+  <div class="block-header">
+    <div class="block-num bn-purple">5</div>
+    <div>
+      <h2>O visual</h2>
+      <div class="sub">Design system — cores, fonte, componentes</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Elemento</th><th>Valor</th><th>Hex</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td>Tema</td><td>Light</td><td>—</td><td>Fundo branco, texto escuro</td></tr>
+      <tr><td>Background</td><td><span style="display:inline-block;width:16px;height:16px;background:#F8FAFC;border:1px solid #ddd;border-radius:3px;vertical-align:middle"></span></td><td>#F8FAFC</td><td>Fundo de todas as telas</td></tr>
+      <tr><td>Primary</td><td><span style="display:inline-block;width:16px;height:16px;background:#0036FF;border-radius:3px;vertical-align:middle"></span></td><td>#0036FF</td><td>Botões, ícones, links, CTA</td></tr>
+      <tr><td>Nav/Header</td><td><span style="display:inline-block;width:16px;height:16px;background:#001A80;border-radius:3px;vertical-align:middle"></span></td><td>#001A80</td><td>Barra de navegação, headers</td></tr>
+      <tr><td>Accent (desconto)</td><td><span style="display:inline-block;width:16px;height:16px;background:#F97316;border-radius:3px;vertical-align:middle"></span></td><td>#F97316</td><td>Badges "OFF", timers, preço com desconto</td></tr>
+      <tr><td>Success (economia)</td><td><span style="display:inline-block;width:16px;height:16px;background:#10B981;border-radius:3px;vertical-align:middle"></span></td><td>#10B981</td><td>"Você economizou R$88"</td></tr>
+      <tr><td>Fonte</td><td>Inter</td><td>—</td><td>Todo o app</td></tr>
+      <tr><td>Ícones</td><td>Lucide</td><td>—</td><td>h-5 w-5 (padrão)</td></tr>
+      <tr><td>Raio de borda</td><td>0.75rem</td><td>—</td><td>Cards, botões, inputs</td></tr>
+      <tr><td>Componentes</td><td>shadcn/ui</td><td>—</td><td>Base UI primitives + Tailwind</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub-block">
+    <h3>Componentes shadcn necessários</h3>
+    <table>
+      <thead><tr><th>Componente</th><th>Onde usa</th></tr></thead>
+      <tbody>
+        <tr><td>Button</td><td>CTAs, ações, formulários</td></tr>
+        <tr><td>Card</td><td>Produtos, looks, promoções</td></tr>
+        <tr><td>Input + Label</td><td>Login, cadastro, busca</td></tr>
+        <tr><td>Badge</td><td>"30% OFF", "Menor preço", plano</td></tr>
+        <tr><td>Tabs</td><td>Navegação principal (bottom tabs)</td></tr>
+        <tr><td>Dialog</td><td>Detalhes do produto, try-on result</td></tr>
+        <tr><td>Sheet</td><td>Filtros mobile, detalhes expandidos</td></tr>
+        <tr><td>Skeleton</td><td>Loading states (feed, promoções)</td></tr>
+        <tr><td>Avatar</td><td>Perfil do usuário</td></tr>
+        <tr><td>Select</td><td>Tamanhos, lojas, filtros</td></tr>
+        <tr><td>Separator</td><td>Divisões visuais entre seções</td></tr>
+        <tr><td>Scroll Area</td><td>Feed scrollável</td></tr>
+        <tr><td>Toggle</td><td>Alertas on/off</td></tr>
+        <tr><td>Slider</td><td>Orçamento, filtro de preço</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="decision">
+    <h4>⚠️ PENDENTE — Hugo mandar 2-3 referências visuais</h4>
+    <p style="font-size:0.85rem;color:var(--g700)">Segundo o FLUXO, Hugo manda 2-3 apps/sites de referência para o visual. Exemplos: Shein app, Pinterest, Pelando, etc. Isso define o "feel" das telas.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 6 — SEGURANÇA                            -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b6">
+  <div class="block-header">
+    <div class="block-num bn-red">6</div>
+    <div>
+      <h2>Segurança</h2>
+      <div class="sub">8 ameaças cobertas desde o planejamento</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>#</th><th>Ameaça</th><th>Proteção</th><th>Implementação</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Senhas fracas / vazadas</td><td>NextAuth + Google OAuth (sem senha própria no MVP)</td><td><span class="b b-green">SIMPLES</span></td></tr>
+      <tr><td>2</td><td>Sessões roubadas</td><td>Tokens HTTP-only, expiração curta, refresh seguro</td><td><span class="b b-green">NextAuth padrão</span></td></tr>
+      <tr><td>3</td><td>Injeção SQL</td><td>Drizzle ORM (queries parametrizadas, zero SQL raw)</td><td><span class="b b-green">AUTOMÁTICO</span></td></tr>
+      <tr><td>4</td><td>XSS (script injection)</td><td>React escapa por padrão + CSP headers</td><td><span class="b b-blue">CONFIG</span></td></tr>
+      <tr><td>5</td><td>Abuso de try-on (custo)</td><td>Rate limiting por plano (free=1/mês, basic=5, premium=ilimitado) + rate limit API</td><td><span class="b b-orange">CRÍTICO</span></td></tr>
+      <tr><td>6</td><td>Fraude de pagamento</td><td>Webhooks Asaas com verificação de assinatura + idempotency</td><td><span class="b b-blue">TECH</span></td></tr>
+      <tr><td>7</td><td>Acesso a dados de outros</td><td>Todas as queries filtram por userId da sessão</td><td><span class="b b-green">PADRÃO</span></td></tr>
+      <tr><td>8</td><td>Vazamento de API keys</td><td>Env vars no Vercel, nunca no frontend. FASHN key server-only.</td><td><span class="b b-green">PADRÃO</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub-block">
+    <h3>Validação de dados</h3>
+    <p><strong>Zod</strong> em todas as API routes. Nenhum input do usuário entra sem validação.</p>
+    <p><strong>Exemplos:</strong> email → z.string().email(), budget → z.number().min(0).max(10000), swipe → z.enum(["like","dislike"])</p>
+  </div>
+
+  <div class="sub-block">
+    <h3>LGPD</h3>
+    <p>Termos de uso + política de privacidade obrigatórios antes do lançamento.</p>
+    <p>Dados coletados: email, nome, preferências de estilo, foto (try-on). Fotos processadas pela FASHN.ai (verificar política deles).</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 7 — PAGAMENTOS                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b7">
+  <div class="block-header">
+    <div class="block-num bn-green">7</div>
+    <div>
+      <h2>Pagamentos</h2>
+      <div class="sub">Asaas + PIX + feature gating</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Item</th><th>Valor</th></tr></thead>
+    <tbody>
+      <tr><td>Gateway</td><td><strong>Asaas</strong> (PIX nativo, cartão, boleto, NF automática)</td></tr>
+      <tr><td>PIX taxa</td><td>R$0,99 por transação</td></tr>
+      <tr><td>Cartão taxa</td><td>2,99%</td></tr>
+      <tr><td>Trial</td><td>7 dias Premium grátis (sem cartão)</td></tr>
+      <tr><td>Garantia</td><td>"Se não se pagar em 1 mês, devolvemos"</td></tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead><tr><th>Plano</th><th>Preço</th><th>Como cobra</th></tr></thead>
+    <tbody>
+      <tr><td>Grátis</td><td>R$0</td><td>—</td></tr>
+      <tr><td>Básico</td><td>R$9,90/mês</td><td>Asaas subscription (PIX ou cartão)</td></tr>
+      <tr><td>Premium</td><td>R$19,90/mês</td><td>Asaas subscription (PIX ou cartão)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub-block">
+    <h3>Fluxo de pagamento</h3>
+    <table>
+      <thead><tr><th>Etapa</th><th>O que acontece</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Usuário clica "Assinar" → tela de planos</td></tr>
+        <tr><td>2</td><td>Escolhe plano → Asaas gera cobrança (PIX QR code ou form cartão)</td></tr>
+        <tr><td>3</td><td>Paga → webhook Asaas confirma → plano ativo no banco</td></tr>
+        <tr><td>4</td><td>Features desbloqueiam instantaneamente</td></tr>
+        <tr><td>5</td><td>Renovação automática mensal</td></tr>
+        <tr><td>6</td><td>Se não paga → webhook atualiza → volta pro free</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-block">
+    <h3>Webhooks Asaas</h3>
+    <table>
+      <thead><tr><th>Evento</th><th>Ação no app</th></tr></thead>
+      <tbody>
+        <tr><td>PAYMENT_CONFIRMED</td><td>Ativa plano, atualiza users.plan + subscriptions</td></tr>
+        <tr><td>PAYMENT_OVERDUE</td><td>Marca status "past_due", envia lembrete</td></tr>
+        <tr><td>SUBSCRIPTION_DELETED</td><td>Volta pro plano free</td></tr>
+        <tr><td>PAYMENT_REFUNDED</td><td>Processa garantia, volta pro free</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-block">
+    <h3>Receita de afiliados (segunda fonte)</h3>
+    <p>Todo "Ver na loja" gera um link de afiliado com tracking. Comissão de 3-20% sobre compras.</p>
+    <table>
+      <thead><tr><th>Loja</th><th>Comissão</th><th>Plataforma</th></tr></thead>
+      <tbody>
+        <tr><td>Shein</td><td>10-20%</td><td>Programa próprio</td></tr>
+        <tr><td>Amazon BR</td><td>7-15%</td><td>Associados</td></tr>
+        <tr><td>Netshoes</td><td>até 13%</td><td>Próprio + Awin</td></tr>
+        <tr><td>Riachuelo</td><td>~10%</td><td>Lomadee/Awin</td></tr>
+        <tr><td>Renner</td><td>5-10%</td><td>Lomadee/Awin</td></tr>
+        <tr><td>Shopee</td><td>3-15%</td><td>Programa próprio</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 8 — O QUE PODE DAR ERRADO               -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b8">
+  <div class="block-header">
+    <div class="block-num bn-red">8</div>
+    <div>
+      <h2>O que pode dar errado</h2>
+      <div class="sub">Riscos + mitigação pra cada um</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Risco</th><th>Impacto</th><th>Probabilidade</th><th>Mitigação</th></tr></thead>
+    <tbody>
+      <tr class="danger-row">
+        <td><strong>Custo de try-on explode</strong></td>
+        <td>🔴 Alto</td><td>Média</td>
+        <td>Rate limiting rígido por plano. Monitorar diário. Fallback: desabilitar temporariamente.</td>
+      </tr>
+      <tr class="danger-row">
+        <td><strong>APIs de lojas mudam/quebram</strong></td>
+        <td>🔴 Alto</td><td>Alta</td>
+        <td>Começar com curadoria manual. APIs como complemento, não dependência.</td>
+      </tr>
+      <tr class="warn-row">
+        <td><strong>Qualidade do try-on ruim</strong></td>
+        <td>🟡 Médio</td><td>Baixa</td>
+        <td>FASHN.ai tem boa qualidade (576x864px). Testar antes com fotos reais.</td>
+      </tr>
+      <tr class="warn-row">
+        <td><strong>Algoritmo recomenda mal</strong></td>
+        <td>🟡 Médio</td><td>Média</td>
+        <td>MVP: tags simples + filtragem. Refinamento com mais dados. Botão "não gostei" em tudo.</td>
+      </tr>
+      <tr class="warn-row">
+        <td><strong>Ninguém converte free → pago</strong></td>
+        <td>🟡 Médio</td><td>Média</td>
+        <td>Gating agressivo no free. Testar 3 ofertas. Ajustar pricing se necessário.</td>
+      </tr>
+      <tr>
+        <td><strong>Problemas jurídicos com scraping</strong></td>
+        <td>🟡 Médio</td><td>Baixa</td>
+        <td>Não fazer scraping no MVP. Usar APIs oficiais de afiliados.</td>
+      </tr>
+      <tr>
+        <td><strong>FASHN.ai sai do ar / muda preço</strong></td>
+        <td>🟡 Médio</td><td>Baixa</td>
+        <td>Backup: Google Vertex AI (créditos startup). Plano B: CatVTON self-hosted.</td>
+      </tr>
+      <tr>
+        <td><strong>Asaas webhook falha</strong></td>
+        <td>🟡 Médio</td><td>Baixa</td>
+        <td>Retry automático + verificação manual. Logs de todos os eventos.</td>
+      </tr>
+      <tr>
+        <td><strong>Foto do try-on vaza/abusa</strong></td>
+        <td>🔴 Alto</td><td>Baixa</td>
+        <td>Fotos processadas e descartadas. Não armazenar long-term. LGPD compliance.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BLOCO 9 — CHECKLIST DE PRONTO                  -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="b9">
+  <div class="block-header">
+    <div class="block-num bn-green">9</div>
+    <div>
+      <h2>Checklist de pronto</h2>
+      <div class="sub">Tudo que precisa estar ✅ antes de ir pro ar</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Categoria</th><th>Item</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr class="highlight-row"><td colspan="3"><strong>🔧 Infraestrutura</strong></td></tr>
+      <tr><td></td><td>Domínio usemodai.com registrado</td><td>⬜</td></tr>
+      <tr><td></td><td>Banco de dados Neon criado</td><td>⬜</td></tr>
+      <tr><td></td><td>Deploy Vercel funcionando</td><td>⬜</td></tr>
+      <tr><td></td><td>Google OAuth configurado</td><td>⬜</td></tr>
+      <tr><td></td><td>Variáveis de ambiente no Vercel</td><td>⬜</td></tr>
+
+      <tr class="highlight-row"><td colspan="3"><strong>👆 Onboarding</strong></td></tr>
+      <tr><td></td><td>Cadastro funciona (email + Google)</td><td>⬜</td></tr>
+      <tr><td></td><td>Swipe de estilos funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>Banco de 100+ fotos curadas</td><td>⬜</td></tr>
+      <tr><td></td><td>Perfil de estilo gerado corretamente</td><td>⬜</td></tr>
+      <tr><td></td><td>Seleção de lojas funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>Slider de orçamento funciona</td><td>⬜</td></tr>
+
+      <tr class="highlight-row"><td colspan="3"><strong>🎁 Feed</strong></td></tr>
+      <tr><td></td><td>Cards de produto renderizam</td><td>⬜</td></tr>
+      <tr><td></td><td>Recomendação filtra por estilo</td><td>⬜</td></tr>
+      <tr><td></td><td>Like/Dislike funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>Link "Ver na loja" abre loja real</td><td>⬜</td></tr>
+      <tr><td></td><td>Limite de 5/dia no free funciona</td><td>⬜</td></tr>
+
+      <tr class="highlight-row"><td colspan="3"><strong>🔥 Promoções</strong></td></tr>
+      <tr><td></td><td>Produtos com desconto aparecem</td><td>⬜</td></tr>
+      <tr><td></td><td>Timer de flash sale funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>Cupom copiável (básico+)</td><td>⬜</td></tr>
+      <tr><td></td><td>Gating 24h delay no free funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>Contador de economia funciona</td><td>⬜</td></tr>
+
+      <tr class="highlight-row"><td colspan="3"><strong>🪄 Try-on</strong></td></tr>
+      <tr><td></td><td>Upload de foto funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>FASHN.ai retorna resultado</td><td>⬜</td></tr>
+      <tr><td></td><td>Rate limiting por plano funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>Compartilhamento funciona</td><td>⬜</td></tr>
+
+      <tr class="highlight-row"><td colspan="3"><strong>💳 Pagamentos</strong></td></tr>
+      <tr><td></td><td>Tela de planos renderiza</td><td>⬜</td></tr>
+      <tr><td></td><td>PIX gera QR code</td><td>⬜</td></tr>
+      <tr><td></td><td>Cartão processa</td><td>⬜</td></tr>
+      <tr><td></td><td>Webhook atualiza plano</td><td>⬜</td></tr>
+      <tr><td></td><td>Trial 7 dias funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>Downgrade pra free ao cancelar</td><td>⬜</td></tr>
+
+      <tr class="highlight-row"><td colspan="3"><strong>🛡️ Segurança</strong></td></tr>
+      <tr><td></td><td>Rate limiting em APIs sensíveis</td><td>⬜</td></tr>
+      <tr><td></td><td>Validação Zod em todas as rotas</td><td>⬜</td></tr>
+      <tr><td></td><td>Env vars nunca no frontend</td><td>⬜</td></tr>
+      <tr><td></td><td>Dados isolados por userId</td><td>⬜</td></tr>
+      <tr><td></td><td>Termos de uso + Privacidade</td><td>⬜</td></tr>
+
+      <tr class="highlight-row"><td colspan="3"><strong>📱 Mobile</strong></td></tr>
+      <tr><td></td><td>Responsivo em tudo (360px+)</td><td>⬜</td></tr>
+      <tr><td></td><td>Bottom nav funciona</td><td>⬜</td></tr>
+      <tr><td></td><td>Swipe funciona no touch</td><td>⬜</td></tr>
+      <tr><td></td><td>Lighthouse > 90</td><td>⬜</td></tr>
+
+      <tr class="highlight-row"><td colspan="3"><strong>🚀 Lançamento</strong></td></tr>
+      <tr><td></td><td>Landing page pronta</td><td>⬜</td></tr>
+      <tr><td></td><td>Meta Pixel instalado</td><td>⬜</td></tr>
+      <tr><td></td><td>Analytics configurado</td><td>⬜</td></tr>
+      <tr><td></td><td>1 criativo de vídeo pronto</td><td>⬜</td></tr>
+      <tr><td></td><td>3 variações de oferta testáveis</td><td>⬜</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- API ROUTES                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="api">
+  <div class="block-header">
+    <div class="block-num bn-blue">⚡</div>
+    <div>
+      <h2>API Routes</h2>
+      <div class="sub">Todos os endpoints do backend</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Método</th><th>Rota</th><th>O que faz</th><th>Auth?</th></tr></thead>
+    <tbody>
+      <tr class="highlight-row"><td colspan="4"><strong>Autenticação</strong></td></tr>
+      <tr><td><span class="method m-get">GET</span><span class="method m-post">POST</span></td><td><code>/api/auth/[...nextauth]</code></td><td>NextAuth handlers</td><td>—</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>Onboarding</strong></td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/swipes</code></td><td>Registrar swipe (like/dislike + tags)</td><td>✅</td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/style-profile</code></td><td>Gerar/atualizar perfil de estilo</td><td>✅</td></tr>
+      <tr><td><span class="method m-put">PUT</span></td><td><code>/api/style-profile</code></td><td>Atualizar lojas, budget, tamanhos</td><td>✅</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>Feed & Recomendações</strong></td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/feed</code></td><td>Peças recomendadas por estilo (paginado)</td><td>✅</td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/feed/looks</code></td><td>Looks completos montados</td><td>✅</td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/feed/feedback</code></td><td>Like/Dislike peça do feed</td><td>✅</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>Promoções</strong></td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/promos</code></td><td>Promoções filtradas por estilo</td><td>✅</td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/promos/flash</code></td><td>Flash sales ativas</td><td>✅</td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/promos/coupons</code></td><td>Cupons disponíveis</td><td>✅</td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/products/[id]/price-history</code></td><td>Histórico de preço (30/90 dias)</td><td>✅</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>Try-on</strong></td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/tryon</code></td><td>Enviar foto + peça → FASHN.ai → resultado</td><td>✅</td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/tryon/history</code></td><td>Histórico de try-ons do usuário</td><td>✅</td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/tryon/usage</code></td><td>Quantos try-ons restam no mês</td><td>✅</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>Salvos</strong></td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/saved</code></td><td>Listar itens salvos</td><td>✅</td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/saved</code></td><td>Salvar item + configurar alerta</td><td>✅</td></tr>
+      <tr><td><span class="method m-del">DEL</span></td><td><code>/api/saved/[id]</code></td><td>Remover item salvo</td><td>✅</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>Afiliados</strong></td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/affiliate/click</code></td><td>Registrar clique em link de loja</td><td>✅</td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/affiliate/redirect/[id]</code></td><td>Redirect pro link de afiliado</td><td>—</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>Pagamentos</strong></td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/subscribe</code></td><td>Criar assinatura no Asaas</td><td>✅</td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/subscribe/cancel</code></td><td>Cancelar assinatura</td><td>✅</td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/webhooks/asaas</code></td><td>Webhook do Asaas (pagamentos)</td><td>🔑 Secret</td></tr>
+
+      <tr class="highlight-row"><td colspan="4"><strong>Admin (só Hugo)</strong></td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/admin/products</code></td><td>Listar/buscar produtos</td><td>🔒 Admin</td></tr>
+      <tr><td><span class="method m-post">POST</span></td><td><code>/api/admin/products</code></td><td>Adicionar produto (curadoria)</td><td>🔒 Admin</td></tr>
+      <tr><td><span class="method m-put">PUT</span></td><td><code>/api/admin/products/[id]</code></td><td>Atualizar produto/cupom</td><td>🔒 Admin</td></tr>
+      <tr><td><span class="method m-get">GET</span></td><td><code>/api/admin/metrics</code></td><td>Dashboard de métricas</td><td>🔒 Admin</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SEQUÊNCIA DE BUILD                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="build">
+  <div class="block-header">
+    <div class="block-num bn-green">🔨</div>
+    <div>
+      <h2>Sequência de build</h2>
+      <div class="sub">3 entregas — Hugo aprova cada uma antes de avançar</div>
+    </div>
+  </div>
+
+  <div class="deliveries">
+    <div class="delivery d1">
+      <h4 style="color:var(--blue)">Entrega 1 — Login + Core + Feed</h4>
+      <ul>
+        <li>Setup projeto + deploy base Vercel</li>
+        <li>Banco de dados (Neon + migrations)</li>
+        <li>Autenticação (Google OAuth)</li>
+        <li>Onboarding completo (swipe + lojas + budget)</li>
+        <li>Feed "Pra Você" com dados curados</li>
+        <li>Bottom navigation (5 abas)</li>
+        <li>Responsivo mobile</li>
+      </ul>
+      <p style="font-size:0.8rem;color:var(--g500);margin-top:0.5rem"><strong>Hugo testa:</strong> criar conta, fazer swipe, ver feed, navegar</p>
+    </div>
+
+    <div class="delivery d2">
+      <h4 style="color:var(--green)">Entrega 2 — Promoções + Try-on + Pagamentos</h4>
+      <ul>
+        <li>Aba Promoções completa (flash, cupons, stack)</li>
+        <li>Try-on com FASHN.ai</li>
+        <li>Aba Salvos (wishlist + alertas)</li>
+        <li>Perfil completo (tamanhos, estilo, economia)</li>
+        <li>Integração Asaas (planos, PIX, cartão)</li>
+        <li>Feature gating funcionando</li>
+        <li>Trial 7 dias</li>
+      </ul>
+      <p style="font-size:0.8rem;color:var(--g500);margin-top:0.5rem"><strong>Hugo testa:</strong> promoções, try-on, assinar, pagar, cancelar</p>
+    </div>
+
+    <div class="delivery d3">
+      <h4 style="color:var(--orange)">Entrega 3 — Landing + Visual + Lançamento</h4>
+      <ul>
+        <li>Landing page de conversão</li>
+        <li>Visual polido (referências do Hugo)</li>
+        <li>Meta Pixel + analytics</li>
+        <li>Admin básico (adicionar produtos/cupons)</li>
+        <li>Termos de uso + privacidade</li>
+        <li>Performance (Lighthouse > 90)</li>
+        <li>Segurança final (audit OWASP)</li>
+      </ul>
+      <p style="font-size:0.8rem;color:var(--g500);margin-top:0.5rem"><strong>Hugo testa:</strong> landing, visual, admin. Vitor testa: criativos, anúncios.</p>
+    </div>
+  </div>
+
+  <div class="sub-block">
+    <h3>Conferência (Momento 3 do FLUXO)</h3>
+    <p>Após cada entrega: Claude compara construído vs plano. Relatório com ✅ ⚠️ ❌. Só avança quando tudo ✅.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ORÇAMENTO                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="block" id="budget">
+  <div class="block-header">
+    <div class="block-num bn-green">💰</div>
+    <div>
+      <h2>Orçamento</h2>
+      <div class="sub">R$5.000 iniciais — como gastar</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Item</th><th>Custo</th><th>Quando</th><th>Tipo</th></tr></thead>
+    <tbody>
+      <tr><td>Vercel hosting</td><td style="color:var(--green);font-weight:700">R$0</td><td>Agora</td><td>Free tier</td></tr>
+      <tr><td>Neon PostgreSQL</td><td style="color:var(--green);font-weight:700">R$0</td><td>Agora</td><td>Free tier</td></tr>
+      <tr><td>Claude (build)</td><td style="color:var(--green);font-weight:700">R$0</td><td>Agora</td><td>Já tem</td></tr>
+      <tr><td>shadcn/ui, Tailwind, Next.js</td><td style="color:var(--green);font-weight:700">R$0</td><td>Agora</td><td>Open source</td></tr>
+      <tr><td>Domínio usemodai.com</td><td>~R$60</td><td>Fase 1</td><td>Anual</td></tr>
+      <tr><td>Enquete validação (Meta Ads)</td><td>R$30</td><td>Fase 1</td><td>Único</td></tr>
+      <tr><td>FASHN.ai try-on (MVP)</td><td>R$0 - R$400/mês</td><td>Entrega 2</td><td>Escala com uso</td></tr>
+      <tr><td>Tráfego pago (lançamento)</td><td>R$1.000 - R$4.000</td><td>Entrega 3</td><td>Meta Ads + TikTok</td></tr>
+      <tr><td>Asaas (pagamentos)</td><td style="color:var(--green);font-weight:700">R$0 + taxas</td><td>Entrega 2</td><td>Por transação</td></tr>
+      <tr class="highlight-row">
+        <td><strong>TOTAL construção</strong></td>
+        <td><strong>~R$90</strong></td>
+        <td></td>
+        <td>Domínio + enquete</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong>SOBRA pra tráfego</strong></td>
+        <td><strong>~R$4.900</strong></td>
+        <td></td>
+        <td>Meta Ads + Try-on</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="sub-block">
+    <h3>Quando escalar (custos variáveis)</h3>
+    <table>
+      <thead><tr><th>Métrica</th><th>1.000 usuários</th><th>10.000 usuários</th></tr></thead>
+      <tbody>
+        <tr><td>FASHN.ai (5 try-ons/user/mês)</td><td>~R$1.900/mês</td><td>~R$19.000/mês</td></tr>
+        <tr><td>Neon DB</td><td>Free tier</td><td>~R$100/mês</td></tr>
+        <tr><td>Vercel</td><td>Free tier</td><td>~R$100/mês</td></tr>
+        <tr><td><strong>Receita estimada</strong></td><td><strong>R$18.500/mês</strong></td><td><strong>R$185.000/mês</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ DECISIONS SUMMARY ══ -->
+<div class="block" style="border:2px solid var(--orange)">
+  <div class="block-header">
+    <div class="block-num bn-orange">⚠️</div>
+    <div>
+      <h2>Decisões pendentes (Hugo + Vitor)</h2>
+      <div class="sub">Precisa decidir antes de começar a construir</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>#</th><th>Decisão</th><th>Opções</th><th>Recomendação</th><th>Bloqueia</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Fonte de dados das lojas</strong></td>
+        <td>APIs afiliados / Scraping / Curadoria / Híbrido</td>
+        <td><span class="b b-orange">Híbrido (D)</span></td>
+        <td>Entrega 2</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Referências visuais</strong></td>
+        <td>Hugo manda 2-3 apps/sites de referência</td>
+        <td>Shein, Pinterest, Pelando</td>
+        <td>Entrega 3</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Enquete paga (validação)</strong></td>
+        <td>GO se CTR > 5%, volta ao backlog se < 5%</td>
+        <td>Rodar antes da Entrega 1</td>
+        <td>Build inteiro</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Registrar domínio</strong></td>
+        <td>usemodai.com + .com.br</td>
+        <td>Registrar agora (antes que alguém pegue)</td>
+        <td>Landing page</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div><!-- /container -->
+
+<!-- ══ FOOTER ══ -->
+<div style="text-align:center;padding:2rem;color:var(--g400);font-size:0.8rem">
+  <p>ModAI — Planejamento Técnico Completo (9 Blocos) • 4LeafTech</p>
+  <p style="margin-top:0.3rem">Atualizado em <script>document.write(new Date().toLocaleDateString('pt-BR'))</script> • Hugo + Vitor + Claude</p>
+</div>
+
+</body>
+</html>
