@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ModAI — Planejamento de Construção</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #0036FF;
+  --blue-dark: #001A80;
+  --blue-light: #E8EDFF;
+  --orange: #F97316;
+  --orange-light: #FFF7ED;
+  --green: #10B981;
+  --green-light: #ECFDF5;
+  --red: #EF4444;
+  --red-light: #FEF2F2;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1E293B;
+  --gray-900: #0F172A;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+}
+
+/* ── Header ── */
+.header {
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+  color: white;
+  padding: 2.5rem 2rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.header h1 span { color: var(--orange); }
+.header p {
+  margin-top: 0.5rem;
+  opacity: 0.85;
+  font-size: 1.05rem;
+}
+.header-meta {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.2rem;
+  flex-wrap: wrap;
+}
+.header-meta .tag {
+  background: rgba(255,255,255,0.15);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* ── Stats Bar ── */
+.stats-bar {
+  max-width: 1200px;
+  margin: -1.5rem auto 0;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.stat-card .number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--blue);
+}
+.stat-card .label {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.2rem;
+}
+
+/* ── Roadmap Timeline ── */
+.roadmap-section {
+  max-width: 1200px;
+  margin: 2.5rem auto 0;
+  padding: 0 1rem;
+}
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.roadmap-scroll {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+.roadmap {
+  display: flex;
+  gap: 0;
+  min-width: max-content;
+  position: relative;
+  padding: 1.5rem 0;
+}
+.roadmap-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 130px;
+  position: relative;
+}
+.roadmap-item::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  width: 100%;
+  height: 3px;
+  background: var(--gray-200);
+  z-index: 0;
+}
+.roadmap-item:last-child::after { display: none; }
+.roadmap-item.done::after { background: var(--green); }
+.roadmap-item.active::after {
+  background: linear-gradient(90deg, var(--blue) 50%, var(--gray-200) 50%);
+}
+.roadmap-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s;
+}
+.roadmap-item.done .roadmap-dot { background: var(--green); }
+.roadmap-item.active .roadmap-dot {
+  background: var(--blue);
+  box-shadow: 0 0 0 4px rgba(0,54,255,0.2);
+  animation: pulse 2s infinite;
+}
+.roadmap-item.future .roadmap-dot { background: var(--gray-300); }
+.roadmap-item.decision .roadmap-dot {
+  background: var(--orange);
+  border-radius: 8px;
+  transform: rotate(45deg);
+}
+.roadmap-item.decision .roadmap-dot span { transform: rotate(-45deg); }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(0,54,255,0.2); }
+  50% { box-shadow: 0 0 0 8px rgba(0,54,255,0.1); }
+}
+.roadmap-label {
+  margin-top: 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-align: center;
+  max-width: 110px;
+}
+.roadmap-item.active .roadmap-label { color: var(--blue); }
+.roadmap-item.done .roadmap-label { color: var(--green); }
+
+/* ── Phases ── */
+.phases {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.phase-card {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  overflow: hidden;
+  border: 1px solid var(--gray-100);
+  transition: all 0.3s;
+}
+.phase-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.phase-card.decision-card { border-left: 4px solid var(--orange); }
+.phase-card.done-card { border-left: 4px solid var(--green); opacity: 0.85; }
+
+.phase-header {
+  padding: 1.2rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  user-select: none;
+}
+.phase-header:hover { background: var(--gray-50); }
+
+.phase-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.phase-icon.blue { background: var(--blue-light); }
+.phase-icon.green { background: var(--green-light); }
+.phase-icon.orange { background: var(--orange-light); }
+.phase-icon.red { background: var(--red-light); }
+
+.phase-info { flex: 1; }
+.phase-info h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.phase-info .subtitle {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  margin-top: 0.1rem;
+}
+
+.phase-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-shrink: 0;
+}
+.progress-bar {
+  width: 80px;
+  height: 6px;
+  background: var(--gray-100);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+.progress-fill.complete { background: var(--green); }
+.progress-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  min-width: 36px;
+  text-align: right;
+}
+
+.phase-chevron {
+  font-size: 1.2rem;
+  color: var(--gray-400);
+  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+.phase-card.open .phase-chevron { transform: rotate(180deg); }
+
+.phase-body {
+  display: none;
+  padding: 0 1.5rem 1.5rem;
+  border-top: 1px solid var(--gray-100);
+}
+.phase-card.open .phase-body { display: block; }
+
+/* ── Checklist ── */
+.checklist { list-style: none; margin-top: 1rem; }
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--gray-50);
+  font-size: 0.9rem;
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--blue);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.checklist .item-text { flex: 1; }
+.checklist .item-text.checked {
+  text-decoration: line-through;
+  color: var(--gray-400);
+}
+.checklist .badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.badge-decision { background: var(--orange-light); color: var(--orange); }
+.badge-tech { background: var(--blue-light); color: var(--blue); }
+.badge-done { background: var(--green-light); color: var(--green); }
+.badge-critical { background: var(--red-light); color: var(--red); }
+
+/* ── Sub-sections ── */
+.subsection {
+  margin-top: 1.2rem;
+  padding: 1rem;
+  background: var(--gray-50);
+  border-radius: 10px;
+}
+.subsection h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin-bottom: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.subsection p {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Decision Box ── */
+.decision-box {
+  margin-top: 1.2rem;
+  padding: 1.2rem;
+  background: var(--orange-light);
+  border-radius: 10px;
+  border: 1px solid rgba(249,115,22,0.2);
+}
+.decision-box h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--orange);
+  margin-bottom: 0.8rem;
+}
+.decision-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.8rem;
+}
+.decision-option {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.decision-option:hover { border-color: var(--orange); }
+.decision-option.selected { border-color: var(--blue); background: var(--blue-light); }
+.decision-option h5 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 0.3rem;
+}
+.decision-option .pros { font-size: 0.8rem; color: var(--green); margin-top: 0.3rem; }
+.decision-option .cons { font-size: 0.8rem; color: var(--red); margin-top: 0.2rem; }
+.decision-option .cost { font-size: 0.8rem; color: var(--gray-500); margin-top: 0.2rem; font-weight: 600; }
+
+/* ── Budget Table ── */
+.budget-section {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+.budget-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.budget-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+.budget-table th {
+  text-align: left;
+  padding: 0.7rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-500);
+  border-bottom: 2px solid var(--gray-100);
+}
+.budget-table td {
+  padding: 0.7rem;
+  border-bottom: 1px solid var(--gray-50);
+}
+.budget-table tr:last-child td { border-bottom: none; }
+.budget-table .total-row {
+  font-weight: 700;
+  background: var(--blue-light);
+}
+.budget-table .total-row td { border-bottom: none; border-radius: 0; }
+.budget-table .free { color: var(--green); font-weight: 600; }
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--gray-400);
+  font-size: 0.8rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header h1 { font-size: 1.5rem; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .phase-header { padding: 1rem; }
+  .phase-progress .progress-bar { width: 50px; }
+  .decision-options { grid-template-columns: 1fr; }
+}
+
+/* ── Animations ── */
+.phase-card { animation: fadeUp 0.4s ease both; }
+.phase-card:nth-child(1) { animation-delay: 0.05s; }
+.phase-card:nth-child(2) { animation-delay: 0.1s; }
+.phase-card:nth-child(3) { animation-delay: 0.15s; }
+.phase-card:nth-child(4) { animation-delay: 0.2s; }
+.phase-card:nth-child(5) { animation-delay: 0.25s; }
+.phase-card:nth-child(6) { animation-delay: 0.3s; }
+.phase-card:nth-child(7) { animation-delay: 0.35s; }
+.phase-card:nth-child(8) { animation-delay: 0.4s; }
+.phase-card:nth-child(9) { animation-delay: 0.45s; }
+.phase-card:nth-child(10) { animation-delay: 0.5s; }
+.phase-card:nth-child(11) { animation-delay: 0.55s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-inner">
+    <h1>Mod<span>AI</span> — Mapa de Construção</h1>
+    <p>Personal shopper com IA. Swipe de estilo + promoções reais + virtual try-on.</p>
+    <div class="header-meta">
+      <span class="tag">Score: 26/30 APROVADO</span>
+      <span class="tag">Orçamento: R$5.000</span>
+      <span class="tag">Stack: Next.js + Vercel + Neon</span>
+      <span class="tag">Equipe: Hugo + Vitor + Claude</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STATS ══ -->
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="number" id="total-tasks">0</div>
+    <div class="label">Total de tarefas</div>
+  </div>
+  <div class="stat-card">
+    <div class="number" id="done-tasks" style="color:var(--green)">0</div>
+    <div class="label">Concluídas</div>
+  </div>
+  <div class="stat-card">
+    <div class="number" id="decisions-count" style="color:var(--orange)">3</div>
+    <div class="label">Decisões pendentes</div>
+  </div>
+  <div class="stat-card">
+    <div class="number">11</div>
+    <div class="label">Fases</div>
+  </div>
+  <div class="stat-card">
+    <div class="number" id="progress-pct" style="color:var(--blue)">0%</div>
+    <div class="label">Progresso geral</div>
+  </div>
+</div>
+
+<!-- ══ ROADMAP ══ -->
+<div class="roadmap-section">
+  <div class="section-title">📍 Roadmap</div>
+  <div class="roadmap-scroll">
+    <div class="roadmap">
+      <div class="roadmap-item done">
+        <div class="roadmap-dot">✓</div>
+        <div class="roadmap-label">Descobrir</div>
+      </div>
+      <div class="roadmap-item active">
+        <div class="roadmap-dot">1</div>
+        <div class="roadmap-label">Validar</div>
+      </div>
+      <div class="roadmap-item future decision">
+        <div class="roadmap-dot"><span>!</span></div>
+        <div class="roadmap-label">Decisão: Dados</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">2</div>
+        <div class="roadmap-label">Infra</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">3</div>
+        <div class="roadmap-label">Onboarding</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">4</div>
+        <div class="roadmap-label">Feed</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">5</div>
+        <div class="roadmap-label">Promoções</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">6</div>
+        <div class="roadmap-label">Try-on</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">7</div>
+        <div class="roadmap-label">Perfil</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">8</div>
+        <div class="roadmap-label">Monetização</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">9</div>
+        <div class="roadmap-label">Blindar</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot">10</div>
+        <div class="roadmap-label">Vender</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PHASES ══ -->
+<div class="phases">
+
+  <!-- FASE 0 — DESCOBRIR ✅ -->
+  <div class="phase-card done-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon green">✅</div>
+      <div class="phase-info">
+        <h3>Fase 0 — Descobrir</h3>
+        <div class="subtitle">Pesquisa de mercado + definição de oferta</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill complete" style="width:100%"></div></div>
+        <div class="progress-text">100%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist">
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Pesquisa de mercado (HUNTER Report 9)</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Análise de concorrência (BR + internacional)</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Scorecard 18 perguntas — 26/30</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Definição do produto (4 pilares)</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">3 variações de oferta definidas</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Value stack completo (R$800+/mês por R$14,90)</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Feature gating definido (free/básico/premium)</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Visual definido (azul #0036FF, accent laranja)</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Programas de afiliados mapeados (8 lojas)</span><span class="badge badge-done">PRONTO</span></li>
+        <li><input type="checkbox" checked disabled><span class="item-text checked">Tecnologia try-on definida (FASHN.ai MVP)</span><span class="badge badge-done">PRONTO</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 1 — VALIDAR -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon orange">🎯</div>
+      <div class="phase-info">
+        <h3>Fase 1 — Validar</h3>
+        <div class="subtitle">Confirmação de demanda real antes de construir</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="1" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="1">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="1">
+        <li><input type="checkbox" data-id="1-1"><span class="item-text">Registrar domínio usemodai.com + .com.br</span><span class="badge badge-critical">URGENTE</span></li>
+        <li><input type="checkbox" data-id="1-2"><span class="item-text">Hugo + Vitor alinhar conceito final</span><span class="badge badge-decision">DECISÃO</span></li>
+        <li><input type="checkbox" data-id="1-3"><span class="item-text">Criar enquete paga no Meta Ads (R$20-30)</span></li>
+        <li><input type="checkbox" data-id="1-4"><span class="item-text">Rodar enquete por 24h (meta: CTR > 5%)</span></li>
+        <li><input type="checkbox" data-id="1-5"><span class="item-text">Analisar resultado e decidir GO/NO-GO</span><span class="badge badge-decision">DECISÃO</span></li>
+      </ul>
+      <div class="subsection">
+        <h4>Como funciona a enquete paga</h4>
+        <p>Criar um anúncio simples no Meta Ads com a proposta de valor do ModAI. Se CTR > 5%, indica demanda real. Investimento: R$20-30. Duração: 24h.</p>
+        <p><strong>Criativo sugerido:</strong> imagem ou vídeo curto mostrando o conceito — "Seu personal shopper por R$14,90/mês. Promoções só no seu estilo."</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚠️ DECISÃO: FONTE DE DADOS -->
+  <div class="phase-card decision-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon orange">⚠️</div>
+      <div class="phase-info">
+        <h3>Decisão Crítica — Fonte de Dados das Lojas</h3>
+        <div class="subtitle">De onde vêm os produtos, preços e promoções reais?</div>
+      </div>
+      <div class="phase-progress">
+        <span class="badge badge-decision" style="font-size:0.8rem">PENDENTE</span>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <p style="font-size:0.9rem;color:var(--gray-600);margin-top:0.8rem">Esta decisão impacta diretamente o custo, a complexidade e a velocidade de construção. Escolha antes de começar a Fase 4 (Promoções).</p>
+
+      <div class="decision-box">
+        <h4>Opções — clique para selecionar</h4>
+        <div class="decision-options">
+
+          <div class="decision-option" onclick="selectOption(this, 'dados')">
+            <h5>A — APIs de Afiliados</h5>
+            <p style="font-size:0.8rem;color:var(--gray-600)">Usar APIs da Lomadee, Awin, Amazon Associados, Shopee Affiliates para puxar produtos com link de comissão.</p>
+            <div class="pros">✓ Legal e autorizado</div>
+            <div class="pros">✓ Link de afiliado já embutido</div>
+            <div class="pros">✓ Dados estruturados</div>
+            <div class="cons">✗ Nem todas as lojas têm API</div>
+            <div class="cons">✗ Catálogo pode ser limitado</div>
+            <div class="cost">💰 Custo: R$0 (APIs gratuitas)</div>
+          </div>
+
+          <div class="decision-option" onclick="selectOption(this, 'dados')">
+            <h5>B — Web Scraping</h5>
+            <p style="font-size:0.8rem;color:var(--gray-600)">Crawlers que visitam os sites das lojas e extraem produtos, preços e promoções em tempo real.</p>
+            <div class="pros">✓ Dados completos e em tempo real</div>
+            <div class="pros">✓ Qualquer loja, sem depender de API</div>
+            <div class="cons">✗ Zona cinza legal</div>
+            <div class="cons">✗ Lojas podem bloquear</div>
+            <div class="cons">✗ Manutenção constante (sites mudam)</div>
+            <div class="cost">💰 Custo: R$100-500/mês (proxies + infra)</div>
+          </div>
+
+          <div class="decision-option" onclick="selectOption(this, 'dados')">
+            <h5>C — Curadoria Manual (MVP)</h5>
+            <p style="font-size:0.8rem;color:var(--gray-600)">Equipe seleciona manualmente as melhores ofertas/peças todo dia com links de afiliado.</p>
+            <div class="pros">✓ Rápido de implementar</div>
+            <div class="pros">✓ Controle total da qualidade</div>
+            <div class="pros">✓ Zero complexidade técnica</div>
+            <div class="cons">✗ Não escala</div>
+            <div class="cons">✗ Depende de trabalho manual diário</div>
+            <div class="cost">💰 Custo: tempo humano</div>
+          </div>
+
+          <div class="decision-option" onclick="selectOption(this, 'dados')">
+            <h5>D — Híbrido (Recomendado MVP)</h5>
+            <p style="font-size:0.8rem;color:var(--gray-600)">APIs de afiliados para lojas que têm + curadoria manual para completar. Evolui para scraping depois.</p>
+            <div class="pros">✓ Melhor dos dois mundos</div>
+            <div class="pros">✓ Lança rápido com qualidade</div>
+            <div class="pros">✓ Escala gradualmente</div>
+            <div class="cons">✗ Ainda precisa de trabalho manual no início</div>
+            <div class="cost">💰 Custo: R$0 + tempo humano</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 2 — INFRAESTRUTURA -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon blue">🏗️</div>
+      <div class="phase-info">
+        <h3>Fase 2 — Infraestrutura</h3>
+        <div class="subtitle">Setup do projeto, banco de dados, autenticação, deploy base</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="2" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="2">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="2">
+        <li><input type="checkbox" data-id="2-1"><span class="item-text">Criar projeto Next.js 14+ com TypeScript strict</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="2-2"><span class="item-text">Configurar Tailwind CSS + shadcn/ui</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="2-3"><span class="item-text">Configurar banco de dados Neon (PostgreSQL) + Drizzle ORM</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="2-4"><span class="item-text">Definir schema do banco (users, styles, products, swipes, saves, plans)</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="2-5"><span class="item-text">Configurar NextAuth v5 (Google + email/senha)</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="2-6"><span class="item-text">Deploy base na Vercel (app vazio funcionando)</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="2-7"><span class="item-text">Configurar variáveis de ambiente (Vercel env)</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="2-8"><span class="item-text">Setup repositório GitHub</span><span class="badge badge-tech">TECH</span></li>
+      </ul>
+      <div class="subsection">
+        <h4>Stack escolhida</h4>
+        <p><strong>Frontend:</strong> Next.js 14, TypeScript, Tailwind, shadcn/ui</p>
+        <p><strong>Backend:</strong> API Routes Next.js, Drizzle ORM</p>
+        <p><strong>Banco:</strong> Neon PostgreSQL (free tier: 0.5GB)</p>
+        <p><strong>Auth:</strong> NextAuth v5 (Google + credentials)</p>
+        <p><strong>Deploy:</strong> Vercel (free tier)</p>
+        <p><strong>Pagamentos:</strong> Asaas (PIX nativo, cartão, boleto)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 3 — ONBOARDING + SWIPE -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon blue">👆</div>
+      <div class="phase-info">
+        <h3>Fase 3 — Onboarding + Swipe de Estilos</h3>
+        <div class="subtitle">Cadastro, swipe Tinder-style, perfil de estilo gerado por IA</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="3" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="3">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="3">
+        <li><input type="checkbox" data-id="3-1"><span class="item-text">Tela de cadastro (email + senha ou Google)</span></li>
+        <li><input type="checkbox" data-id="3-2"><span class="item-text">Tela de boas-vindas com proposta de valor</span></li>
+        <li><input type="checkbox" data-id="3-3"><span class="item-text">Interface de swipe (cards com fotos de looks)</span></li>
+        <li><input type="checkbox" data-id="3-4"><span class="item-text">Curar banco de 100+ fotos de looks para swipe</span><span class="badge badge-decision">DECISÃO</span></li>
+        <li><input type="checkbox" data-id="3-5"><span class="item-text">Algoritmo de perfil de estilo (tags: casual, streetwear, minimalista...)</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="3-6"><span class="item-text">Tela de seleção de lojas preferidas</span></li>
+        <li><input type="checkbox" data-id="3-7"><span class="item-text">Slider de faixa de orçamento preferido</span></li>
+        <li><input type="checkbox" data-id="3-8"><span class="item-text">Tela de resultado: "Seu estilo é..."</span></li>
+        <li><input type="checkbox" data-id="3-9"><span class="item-text">Salvar perfil de estilo no banco de dados</span><span class="badge badge-tech">TECH</span></li>
+      </ul>
+      <div class="subsection">
+        <h4>Como funciona o swipe</h4>
+        <p>20-30 fotos de looks. Swipe direita = gostei, esquerda = não gostei. O algoritmo classifica preferências por tags e gera um perfil de estilo.</p>
+        <p><strong>Detalhe UX:</strong> Animação fluida tipo Tinder. Cada card mostra a foto + tags do estilo. Feedback visual imediato.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 4 — FEED "PRA VOCÊ" -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon blue">🎁</div>
+      <div class="phase-info">
+        <h3>Fase 4 — Feed "Pra Você" (Recomendações)</h3>
+        <div class="subtitle">Feed diário de peças + looks completos personalizados</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="4" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="4">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="4">
+        <li><input type="checkbox" data-id="4-1"><span class="item-text">Layout do feed (cards com foto, preço original, preço com desconto, loja)</span></li>
+        <li><input type="checkbox" data-id="4-2"><span class="item-text">Algoritmo de recomendação por perfil de estilo</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="4-3"><span class="item-text">Seção "Peças pra você" (individuais)</span></li>
+        <li><input type="checkbox" data-id="4-4"><span class="item-text">Seção "Looks completos" (camiseta + calça + tênis com preço total)</span></li>
+        <li><input type="checkbox" data-id="4-5"><span class="item-text">Seção "Trending agora"</span></li>
+        <li><input type="checkbox" data-id="4-6"><span class="item-text">Botão "Ver na loja" com link de afiliado</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="4-7"><span class="item-text">Botão "Salvar" e "Não gostei" (refina algoritmo)</span></li>
+        <li><input type="checkbox" data-id="4-8"><span class="item-text">Pull-to-refresh e scroll infinito</span></li>
+        <li><input type="checkbox" data-id="4-9"><span class="item-text">Feature gating: free = 5 peças/dia</span><span class="badge badge-tech">TECH</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 5 — PROMOÇÕES -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon orange">🔥</div>
+      <div class="phase-info">
+        <h3>Fase 5 — Promoções (Pilar Central)</h3>
+        <div class="subtitle">Flash sales, cupons, stack de desconto, alertas de preço</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="5" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="5">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="5">
+        <li><input type="checkbox" data-id="5-1"><span class="item-text">Integrar fonte de dados (depende da Decisão de Dados)</span><span class="badge badge-critical">BLOQUEADO</span></li>
+        <li><input type="checkbox" data-id="5-2"><span class="item-text">Aba "Promoções" com layout por seções</span></li>
+        <li><input type="checkbox" data-id="5-3"><span class="item-text">Seção Flash Sales (timer contando)</span></li>
+        <li><input type="checkbox" data-id="5-4"><span class="item-text">Seção Maiores Descontos (% off no seu estilo)</span></li>
+        <li><input type="checkbox" data-id="5-5"><span class="item-text">Seção Cupons Ativos (botão copiar código)</span></li>
+        <li><input type="checkbox" data-id="5-6"><span class="item-text">Seção Menor Preço (menor preço em 90 dias)</span></li>
+        <li><input type="checkbox" data-id="5-7"><span class="item-text">Seção Stack de Desconto (promoção + cupom empilhados)</span></li>
+        <li><input type="checkbox" data-id="5-8"><span class="item-text">Seção "Seus alertas" (peças que baixaram de preço)</span></li>
+        <li><input type="checkbox" data-id="5-9"><span class="item-text">Contador de economia acumulada no topo</span></li>
+        <li><input type="checkbox" data-id="5-10"><span class="item-text">Badge "Você economiza R$XX" em cada card</span></li>
+        <li><input type="checkbox" data-id="5-11"><span class="item-text">Histórico de preço por peça</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="5-12"><span class="item-text">Feature gating: free = 24h de atraso + cupom oculto</span><span class="badge badge-tech">TECH</span></li>
+      </ul>
+      <div class="subsection">
+        <h4>Por que esta é a fase mais complexa</h4>
+        <p>Promoções dependem de dados em tempo real de várias lojas. A qualidade dos dados define a qualidade do produto. Por isso a Decisão de Dados precisa ser tomada ANTES desta fase.</p>
+        <p><strong>3 camadas:</strong> Promoções filtradas por estilo → Cupons agregados → Stack de desconto (promoção + cupom + cashback).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 6 — TRY-ON -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon blue">🪄</div>
+      <div class="phase-info">
+        <h3>Fase 6 — Experimenta AI (Virtual Try-On)</h3>
+        <div class="subtitle">Provar roupas com IA antes de comprar — wow moment</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="6" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="6">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="6">
+        <li><input type="checkbox" data-id="6-1"><span class="item-text">Criar conta na FASHN.ai e obter API key</span></li>
+        <li><input type="checkbox" data-id="6-2"><span class="item-text">Integrar API de virtual try-on</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="6-3"><span class="item-text">Tela de upload de foto do usuário</span></li>
+        <li><input type="checkbox" data-id="6-4"><span class="item-text">Funcionalidade "Provar peça" (feed → "como fica em mim?")</span></li>
+        <li><input type="checkbox" data-id="6-5"><span class="item-text">Funcionalidade "Provar look completo"</span></li>
+        <li><input type="checkbox" data-id="6-6"><span class="item-text">Funcionalidade "Explorar estilo" ("como ficaria de streetwear?")</span></li>
+        <li><input type="checkbox" data-id="6-7"><span class="item-text">Tela de resultado com antes/depois</span></li>
+        <li><input type="checkbox" data-id="6-8"><span class="item-text">Botão "Compartilhar" (Stories, WhatsApp) — viralidade</span></li>
+        <li><input type="checkbox" data-id="6-9"><span class="item-text">Feature gating: free = 1/mês, básico = 5/mês, premium = ilimitado</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="6-10"><span class="item-text">Controle de custo por usuário (rate limiting)</span><span class="badge badge-critical">CUSTO</span></li>
+      </ul>
+      <div class="subsection">
+        <h4>Custo FASHN.ai</h4>
+        <p><strong>US$0,075 por imagem.</strong> Com 1.000 usuários fazendo 5 try-ons/mês = 5.000 imagens = US$375/mês (~R$1.900).</p>
+        <p><strong>Rate limiting é essencial</strong> para não estourar o orçamento. O feature gating (free=1, básico=5, premium=ilimitado) protege o custo.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 7 — PERFIL & SALVOS -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon blue">👤</div>
+      <div class="phase-info">
+        <h3>Fase 7 — Perfil & Salvos</h3>
+        <div class="subtitle">Perfil de estilo, tamanhos, wishlist, alertas</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="7" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="7">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="7">
+        <li><input type="checkbox" data-id="7-1"><span class="item-text">Aba "Perfil" — meu estilo (replay swipe)</span></li>
+        <li><input type="checkbox" data-id="7-2"><span class="item-text">Meus tamanhos por loja (M na Renner, G na Zara...)</span></li>
+        <li><input type="checkbox" data-id="7-3"><span class="item-text">Ocasiões favoritas (encontro, trabalho, casual, academia)</span></li>
+        <li><input type="checkbox" data-id="7-4"><span class="item-text">Orçamento preferido (editar slider)</span></li>
+        <li><input type="checkbox" data-id="7-5"><span class="item-text">Contador de economia total acumulada</span></li>
+        <li><input type="checkbox" data-id="7-6"><span class="item-text">Aba "Salvos" — wishlist compartilhável (link)</span></li>
+        <li><input type="checkbox" data-id="7-7"><span class="item-text">Alertas de preço ativos</span></li>
+        <li><input type="checkbox" data-id="7-8"><span class="item-text">Looks salvos</span></li>
+        <li><input type="checkbox" data-id="7-9"><span class="item-text">Gestão do plano/assinatura</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 8 — MONETIZAÇÃO -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon green">💰</div>
+      <div class="phase-info">
+        <h3>Fase 8 — Monetização</h3>
+        <div class="subtitle">Planos, pagamento, feature gating, links de afiliado</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="8" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="8">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="8">
+        <li><input type="checkbox" data-id="8-1"><span class="item-text">Integrar Asaas (PIX, cartão, boleto)</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="8-2"><span class="item-text">Tela de planos (Grátis / Básico R$9,90 / Premium R$19,90)</span></li>
+        <li><input type="checkbox" data-id="8-3"><span class="item-text">Lógica de feature gating por plano</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="8-4"><span class="item-text">Trial de 7 dias Premium gratuito</span></li>
+        <li><input type="checkbox" data-id="8-5"><span class="item-text">Webhooks de pagamento (assinatura ativa/cancelada/expirada)</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="8-6"><span class="item-text">Cadastro nas plataformas de afiliados (Lomadee, Awin, Shopee, Shein)</span></li>
+        <li><input type="checkbox" data-id="8-7"><span class="item-text">Sistema de tracking de links de afiliado por clique/compra</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="8-8"><span class="item-text">Garantia "se não se pagar em 1 mês, devolve" — lógica de reembolso</span></li>
+      </ul>
+      <div class="subsection">
+        <h4>Receita projetada</h4>
+        <p><strong>1.000 pagantes:</strong> R$14.900/mês (mensalidade) + R$3.600/mês (afiliados) = R$18.500/mês</p>
+        <p><strong>10.000 pagantes:</strong> R$149.000 + R$36.000 = R$185.000/mês</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 9 — BLINDAR -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon red">🛡️</div>
+      <div class="phase-info">
+        <h3>Fase 9 — Blindar</h3>
+        <div class="subtitle">Segurança, testes, performance, responsividade</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="9" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="9">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="9">
+        <li><input type="checkbox" data-id="9-1"><span class="item-text">Audit de segurança (OWASP top 10)</span><span class="badge badge-critical">SEGURANÇA</span></li>
+        <li><input type="checkbox" data-id="9-2"><span class="item-text">Rate limiting em APIs sensíveis (try-on, auth)</span><span class="badge badge-critical">SEGURANÇA</span></li>
+        <li><input type="checkbox" data-id="9-3"><span class="item-text">Validação de inputs com Zod em todas as rotas</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="9-4"><span class="item-text">Testes dos fluxos críticos (cadastro → swipe → feed → try-on → pagamento)</span></li>
+        <li><input type="checkbox" data-id="9-5"><span class="item-text">Responsividade mobile (90%+ do tráfego será mobile)</span></li>
+        <li><input type="checkbox" data-id="9-6"><span class="item-text">Performance: Lighthouse score > 90</span></li>
+        <li><input type="checkbox" data-id="9-7"><span class="item-text">Tratamento de erros (API fora, pagamento falhou, try-on timeout)</span></li>
+        <li><input type="checkbox" data-id="9-8"><span class="item-text">Backup e recuperação de dados</span></li>
+        <li><input type="checkbox" data-id="9-9"><span class="item-text">Termos de uso + política de privacidade (LGPD)</span><span class="badge badge-critical">LEGAL</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 10 — VENDER -->
+  <div class="phase-card">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-icon green">🚀</div>
+      <div class="phase-info">
+        <h3>Fase 10 — Vender</h3>
+        <div class="subtitle">Landing page, criativos, tráfego pago, lançamento</div>
+      </div>
+      <div class="phase-progress">
+        <div class="progress-bar"><div class="progress-fill" data-phase="10" style="width:0%"></div></div>
+        <div class="progress-text" data-phase="10">0%</div>
+      </div>
+      <div class="phase-chevron">▼</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist" data-phase="10">
+        <li><input type="checkbox" data-id="10-1"><span class="item-text">Landing page de conversão (usemodai.com)</span></li>
+        <li><input type="checkbox" data-id="10-2"><span class="item-text">Seções: hero + como funciona + value stack + depoimentos + CTA</span></li>
+        <li><input type="checkbox" data-id="10-3"><span class="item-text">Criativo vídeo 15s: swipe → looks → try-on (wow moment)</span><span class="badge badge-decision">VITOR</span></li>
+        <li><input type="checkbox" data-id="10-4"><span class="item-text">Criativo imagem estática (3 variações de oferta)</span><span class="badge badge-decision">VITOR</span></li>
+        <li><input type="checkbox" data-id="10-5"><span class="item-text">Configurar Meta Ads (pixel, conversão, público)</span></li>
+        <li><input type="checkbox" data-id="10-6"><span class="item-text">Testar 3 variações de oferta (economia vs exclusividade vs arrependimento)</span></li>
+        <li><input type="checkbox" data-id="10-7"><span class="item-text">Testar TikTok Ads / Instagram Reels</span></li>
+        <li><input type="checkbox" data-id="10-8"><span class="item-text">Configurar analytics e tracking de conversão</span><span class="badge badge-tech">TECH</span></li>
+        <li><input type="checkbox" data-id="10-9"><span class="item-text">A/B test de landing page (headline, CTA)</span></li>
+        <li><input type="checkbox" data-id="10-10"><span class="item-text">Meta: 100 cadastros na primeira semana</span><span class="badge badge-critical">META</span></li>
+      </ul>
+      <div class="subsection">
+        <h4>Estratégia de lançamento</h4>
+        <p><strong>Oferta 1 (economia/ROI)</strong> como headline principal + <strong>Oferta 3 (try-on)</strong> como suporte.</p>
+        <p>Economia é racional e comprovável. Try-on é emocional e viral. Juntos são imbatíveis.</p>
+        <p><strong>CTA:</strong> "Começar a economizar — 7 dias grátis"</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ BUDGET ══ -->
+<div class="budget-section">
+  <div class="section-title">💰 Orçamento Estimado (MVP)</div>
+  <div class="budget-card">
+    <table class="budget-table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Custo mensal</th>
+          <th>Notas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Vercel (hosting)</td>
+          <td class="free">R$0</td>
+          <td>Free tier (100GB bandwidth)</td>
+        </tr>
+        <tr>
+          <td>Neon (PostgreSQL)</td>
+          <td class="free">R$0</td>
+          <td>Free tier (0.5GB storage)</td>
+        </tr>
+        <tr>
+          <td>Domínio usemodai.com</td>
+          <td>~R$60/ano</td>
+          <td>Registro único</td>
+        </tr>
+        <tr>
+          <td>FASHN.ai (try-on)</td>
+          <td>R$0 - R$1.900</td>
+          <td>US$0,075/img — escala com uso</td>
+        </tr>
+        <tr>
+          <td>Claude API (recomendações)</td>
+          <td>R$50 - R$300</td>
+          <td>Gerar looks, classificar estilo</td>
+        </tr>
+        <tr>
+          <td>Enquete validação</td>
+          <td>R$30</td>
+          <td>Meta Ads — único</td>
+        </tr>
+        <tr>
+          <td>Tráfego pago (lançamento)</td>
+          <td>R$1.000 - R$3.000</td>
+          <td>Meta Ads + TikTok</td>
+        </tr>
+        <tr>
+          <td>Asaas (pagamentos)</td>
+          <td class="free">R$0 + taxas</td>
+          <td>PIX: R$0,99/tx | Cartão: 2,99%</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>TOTAL ESTIMADO</strong></td>
+          <td><strong>R$1.140 - R$5.290/mês</strong></td>
+          <td>Cresce com número de usuários</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="subsection" style="margin-top:1rem">
+      <h4>Com R$5.000 iniciais</h4>
+      <p><strong>Construção:</strong> R$0 (Claude + Vercel free + Neon free)</p>
+      <p><strong>Domínio:</strong> ~R$60</p>
+      <p><strong>Enquete validação:</strong> R$30</p>
+      <p><strong>Sobra pra tráfego pago:</strong> ~R$4.900</p>
+      <p><strong>Try-on no MVP:</strong> começa com poucos usuários, custo mínimo. Escala conforme receita.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div class="footer">
+  <p>ModAI — Planejamento de Construção • 4LeafTech • Atualizado em <span id="update-date"></span></p>
+  <p style="margin-top:0.3rem">Hugo + Vitor + Claude</p>
+</div>
+
+<script>
+// ── Date ──
+document.getElementById('update-date').textContent = new Date().toLocaleDateString('pt-BR');
+
+// ── Toggle phases ──
+function togglePhase(header) {
+  const card = header.parentElement;
+  card.classList.toggle('open');
+}
+
+// ── Checkbox persistence ──
+const STORAGE_KEY = 'modai-checklist';
+
+function loadState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch { return {}; }
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function initChecklists() {
+  const state = loadState();
+  const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]:not([disabled])');
+
+  checkboxes.forEach(cb => {
+    const id = cb.dataset.id;
+    if (state[id]) {
+      cb.checked = true;
+      cb.nextElementSibling.classList.add('checked');
+    }
+
+    cb.addEventListener('change', () => {
+      const s = loadState();
+      s[id] = cb.checked;
+      saveState(s);
+      cb.nextElementSibling.classList.toggle('checked', cb.checked);
+      updateProgress();
+    });
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const phases = {};
+  const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]:not([disabled])');
+  let totalAll = 0, doneAll = 0;
+
+  checkboxes.forEach(cb => {
+    const id = cb.dataset.id;
+    if (!id) return;
+    const phase = id.split('-')[0];
+    if (!phases[phase]) phases[phase] = { total: 0, done: 0 };
+    phases[phase].total++;
+    totalAll++;
+    if (cb.checked) { phases[phase].done++; doneAll++; }
+  });
+
+  // Add phase 0 (10 done items)
+  totalAll += 10;
+  doneAll += 10;
+
+  Object.keys(phases).forEach(phase => {
+    const pct = phases[phase].total > 0
+      ? Math.round((phases[phase].done / phases[phase].total) * 100)
+      : 0;
+    const bar = document.querySelector(`.progress-fill[data-phase="${phase}"]`);
+    const text = document.querySelector(`.progress-text[data-phase="${phase}"]`);
+    if (bar) {
+      bar.style.width = pct + '%';
+      if (pct === 100) bar.classList.add('complete');
+      else bar.classList.remove('complete');
+    }
+    if (text) text.textContent = pct + '%';
+  });
+
+  document.getElementById('total-tasks').textContent = totalAll;
+  document.getElementById('done-tasks').textContent = doneAll;
+  document.getElementById('progress-pct').textContent = Math.round((doneAll / totalAll) * 100) + '%';
+}
+
+// ── Decision options ──
+function selectOption(el, group) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.decision-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+
+  const DECISION_KEY = 'modai-decisions';
+  try {
+    const decisions = JSON.parse(localStorage.getItem(DECISION_KEY)) || {};
+    decisions[group] = el.querySelector('h5').textContent;
+    localStorage.setItem(DECISION_KEY, JSON.stringify(decisions));
+  } catch {}
+}
+
+// Load saved decisions
+function loadDecisions() {
+  try {
+    const decisions = JSON.parse(localStorage.getItem('modai-decisions')) || {};
+    Object.keys(decisions).forEach(group => {
+      document.querySelectorAll('.decision-option').forEach(opt => {
+        if (opt.querySelector('h5').textContent === decisions[group]) {
+          opt.classList.add('selected');
+        }
+      });
+    });
+  } catch {}
+}
+
+// ── Init ──
+initChecklists();
+loadDecisions();
+</script>
+
+</body>
+</html>
